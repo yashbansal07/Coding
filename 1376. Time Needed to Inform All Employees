@@ -1,0 +1,43 @@
+class Solution {
+public:
+    unordered_map<int, vector<int>> graph;
+    
+    void buildGraph(vector<int>& manager){
+        for(int i=0; i < manager.size(); ++i){
+            if(manager[i] != -1)
+                graph[manager[i]].push_back(i);
+        }
+    }
+    
+    int numOfMinutes(int n, int headID, vector<int>& manager, vector<int>& informTime) {
+        graph[headID] = {};
+        buildGraph(manager);
+        
+        if(graph[headID].size() == 0)
+            return 0;
+        
+        for(auto itr : graph){
+            cout << itr.first << " Ele: ";
+            for(auto ele : itr.second)
+                cout << ele << " ";
+            cout<< endl;
+        }
+        
+        queue<pair<int,int>>q;
+        q.push(make_pair(headID,0));
+        int maxi=0;
+        while(!q.empty()) {
+            int n=q.size();
+            for(int i=0;i<n;i++) {
+                int head=q.front().first;
+                int timeTaken=q.front().second;
+                q.pop();
+                int dur=informTime[head]+timeTaken;
+                maxi=max(maxi,dur);
+                for(auto it:graph[head])
+                    q.push(make_pair(it,dur));
+            }
+        }
+        return maxi;
+    }
+};
